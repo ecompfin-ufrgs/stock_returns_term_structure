@@ -3,3 +3,16 @@ from numpy.random import randint
 import arch.data.sp500
 from arch import arch_model
 import plotly.express as px
+
+
+data = arch.data.sp500.load()
+market = data['Adj Close']
+returns = 100 * market.pct_change().dropna()
+returns.name = 'Returns'
+returns = returns.to_frame()
+
+returns.plot();
+
+am = arch_model(returns,mean='constant',  p=1, q=1, dist='skewt', vol='GARCH')
+garch_output = am.fit(disp='off')
+garch_output.summary
